@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% load humanize %}
+{% load tweet_extras %}
+{% load user_extras %}
+
+{% block title %}
+{{ userprofile.username }}'s profile overview
+{% endblock %}
+
+{% block header %}
+  <link rel="stylesheet" href="{% static 'css/tweet.css' %}">
+  <link rel="stylesheet" href="{% static 'css/useroverview.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="tweet-box">
+    <div class="tweets">
+      <div class="user-top-section">
+        <div class="flex-row">
+          <img id="profile-picture" src="{{ userprofile.profilepicture.url }}" alt="{{ userprofile.username }}'s profile picture">
+          <span>@{{ userprofile.username }}</span>
+        </div>
+        <div class="flex-row">
+          <span>{{ userprofile.bio }}</span>
+        </div>
+        <div class="flex-row">
+          {% if userprofile.location %}
+            <i class="fas fa-location-arrow"></i>{{  userprofile.location }}
+          {% endif %}
+          {% if userprofile.website %}
+            <i class="fas fa-link"></i><a id="user-website" href="{{ userprofile.website }}">{{  userprofile.website }}</a>
+          {% endif %}
+        </div>
+        {% if request.user.is_anonymous %}
+          <div class="btn-twitter follow"><a href="{% url 'login' %}">Follow</a></div>
+        {% else %}
+          {% if request.user != userprofile %}
+            {% if request.user|is_following:userprofile %}
+              <button class="btn twitter-btn follow" id="follow" data-userid="{{ userprofile.pk }}"">Unfollow</button>
+            {% else %}
+              <button class=" btn twitter-btn follow" id="follow" data-userid="{{ userprofile.pk }}"">Follow</button>
+            {% endif %}
+          {% else %}
+            <button class="btn twitter-btn"><a href="{% url 'profileupdate' userprofile.username %}">Edit</a></button>
+          {% endif %}
+        {% endif %}
+      </div>
+        <div class="new-tweet-bottom follow-info-section">
+          <div class="followers">
+            <a href="{% url 'userfollowers' userprofile.username %}" id="follower-id">
+              {{ followers }} Followers
+            </a>
+          </div>
+          <div class="following">
+            <a href="{% url 'userfollowing' userprofile.username %}">
+              {{ following }} Following
+            </a>
+          </div>
+        </div>
+      {% if tweets %}
+        {% for tweet in tweets %}
+          <div class="tweet">
+              <div class="tweet-header">
+                <span>@<a href="{% url 'useroverview' tweet.user.username %}">{{ tweet.user.username }}</a></span>
+                <span>{{ tweet.created_date|naturaltime }}</span>
+              </div>
+              <a href="{% url 'tweet' tweet.user.username tweet.pk %}">
+                <div class="tweet-content">
+                  {{ tweet.text }}
+                </div>
+              </a>
+              {% if request.user.is_anonymous %}
+                <a href="{% url 'login' %}"><i class="far fa-heart" id="like{{ tweet.pk }}" data-tweetid="{{ tweet.pk }}"></i></a>
+              {% else %}
+                {% if tweet|check_if_liked:request.user %}
+                  <i class="fas fa-heart" id="like{{ tweet.pk }}" data-tweetid="{{ tweet.pk }}"></i>
+                {% else %}
+                  <i class="far fa-heart" id="like{{ tweet.pk }}" data-tweetid="{{ tweet.pk }}"></i>
+                {% endif %}
+              {% endif %}
+              <span id="likecount{{ tweet.pk }}">{{ tweet.liked_tweet.count }}</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <h2>No tweets at this time.</h2>
+      {% endif %}
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $('.fa-heart').click(function() {
+      var id = $(this).attr("data-tweetid");
+      $.ajax({
+        type: "GET",
+        url: "{% url 'liketweet' %}",
+        data: {
+          tweet_id: id
+        },
+
+        success: function(json) {
+          $('#like' + id).removeClass('far');
+          $('#like' + id).addClass('fas');
+          $('#likecount' + id).text(json.likecount);
+          if(json.delete == true) {
+            $('.fa-heart').removeClass('fas').addClass('far');
+          } else {
+            $('.fa-heart').removeClass('far').addClass('fas');
+          }
+        }
+      });
+    });
+  </script>
+
+  <script type="text/javascript">
+    // Creates or removes follow object depending if request user
+    // is already following the overview user
+    $('.follow').click(function() {
+      var id = $(this).attr("data-userid");
+      $.ajax({
+        type: "GET",
+        url: "{% url 'follow' %}",
+        data: {
+          userid: id
+        },
+
+        success: function(json) {
+          if(json.delete == true) {
+            $("#follow").text("Follow");
+          } else {
+            $("#follow").text("Unfollow");
+          }
+          // Update the follower count after follow/unfollow action has occured in the backend
+          $("#follower-id").text("Followers " + json.newFollowerCount)
+
+        }
+      });
+    });
+  </script>
+{% endblock %}
