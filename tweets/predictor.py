@@ -1,9 +1,12 @@
+import nltk
 import os
 import torch
 import torch.nn as nn
 from nltk.tokenize import word_tokenize
 import re
 import json
+
+nltk.download('punkt')
 
 class SimpleCNNTextClassifier(nn.Module):
     def __init__(self, vocab_size, embed_size, num_classes, kernel_sizes, num_filters):
