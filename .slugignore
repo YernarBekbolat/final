@@ -1,0 +1,10 @@
+*.log
+*.gz
+*.md
+*.txt
+*.yml
+__pycache__/
+*.pyc
+node_modules/
+tmp/
+tests/
