@@ -1,7 +1,6 @@
 *.log
 *.gz
 *.md
-*.txt
 *.yml
 __pycache__/
 *.pyc
