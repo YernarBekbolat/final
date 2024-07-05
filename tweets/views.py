@@ -19,7 +19,6 @@ def newtweet(request):
         text = request.POST.get('text')
         user = request.user
 
-        # Check if the tweet is abusive
         if is_abusive(text, model, vocab):
             return JsonResponse({'error': 'Your tweet is offensive and cannot be posted.'}, status=400)
 

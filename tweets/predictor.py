@@ -1,6 +1,7 @@
 import os
 import torch
 import torch.nn as nn
+from nltk.tokenize import word_tokenize
 import re
 import json
 
@@ -20,14 +21,17 @@ class SimpleCNNTextClassifier(nn.Module):
         logits = self.fc(x)
         return logits
 
+# Get the directory of the current file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Load vocabulary
 vocab_path = os.path.join(BASE_DIR, 'model', 'vocab.json')
 with open(vocab_path, 'r') as f:
     vocab = json.load(f)
 
-vocab_size = len(vocab) + 1  
+vocab_size = len(vocab) + 1  # Plus one to account for padding/index 0
 
+# Load model with the correct vocabulary size
 model_path = os.path.join(BASE_DIR, 'model', 'cnn_text_classifier.pth')
 model = SimpleCNNTextClassifier(vocab_size=vocab_size, embed_size=128, num_classes=1, kernel_sizes=[3], num_filters=100)
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))  # Added map_location for CPU loading
@@ -35,14 +39,11 @@ model.eval()
 
 def preprocess_text(text):
     text = text.lower()
-    text = re.sub(r'@\\w+', '', text)
-    text = re.sub(r'\\d+', '', text)
-    text = re.sub(r'\\s+', ' ', text)
-    text = re.sub(r'[^\\w\\s]', '', text)
+    text = re.sub(r'@\w+', '', text)
+    text = re.sub(r'\d+', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'[^\w\s]', '', text)
     return text.strip()
-
-def word_tokenize(text):
-    return re.findall(r'\\b\\w+\\b', text)
 
 def text_to_sequence(text, vocab, max_seq_length=100):
     tokens = word_tokenize(preprocess_text(text))
@@ -51,10 +52,7 @@ def text_to_sequence(text, vocab, max_seq_length=100):
         sequence += [0] * (max_seq_length - len(sequence))
     return sequence[:max_seq_length]
 
-def is_abusive(content, model, vocab, max_text_length=1000):
-    if len(content) > max_text_length:
-        raise ValueError(f"Input text length exceeds maximum allowed length of {max_text_length}")
-    
+def is_abusive(content, model, vocab):
     sequence = text_to_sequence(content, vocab)
     with torch.no_grad():
         output = model(torch.tensor([sequence], dtype=torch.long))
