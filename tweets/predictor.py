@@ -35,14 +35,14 @@ model.eval()
 
 def preprocess_text(text):
     text = text.lower()
-    text = re.sub(r'@\w+', '', text)
-    text = re.sub(r'\d+', '', text)
-    text = re.sub(r'\s+', ' ', text)
-    text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'@\\w+', '', text)
+    text = re.sub(r'\\d+', '', text)
+    text = re.sub(r'\\s+', ' ', text)
+    text = re.sub(r'[^\\w\\s]', '', text)
     return text.strip()
 
 def word_tokenize(text):
-    return re.findall(r'\b\w+\b', text)
+    return re.findall(r'\\b\\w+\\b', text)
 
 def text_to_sequence(text, vocab, max_seq_length=100):
     tokens = word_tokenize(preprocess_text(text))
@@ -51,7 +51,10 @@ def text_to_sequence(text, vocab, max_seq_length=100):
         sequence += [0] * (max_seq_length - len(sequence))
     return sequence[:max_seq_length]
 
-def is_abusive(content, model, vocab):
+def is_abusive(content, model, vocab, max_text_length=1000):
+    if len(content) > max_text_length:
+        raise ValueError(f"Input text length exceeds maximum allowed length of {max_text_length}")
+    
     sequence = text_to_sequence(content, vocab)
     with torch.no_grad():
         output = model(torch.tensor([sequence], dtype=torch.long))
