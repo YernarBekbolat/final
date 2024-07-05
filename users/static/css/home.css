@@ -1,1 +1,120 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f8fa;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: #1da1f2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Tweet Box Styles */
+.tweet-box {
+    width: 50%;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Form Styles */
+.form-group textarea {
+    width: 100%;
+    border: 1px solid #ccd6dd;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+}
+
+.btn.twitter-btn {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn.twitter-btn:hover {
+    background-color: #0d95e8;
+}
+
+/* Tweet Styles */
+.tweet {
+    border-bottom: 1px solid #e1e8ed;
+    padding: 10px 0;
+}
+
+.tweet:last-child {
+    border-bottom: none;
+}
+
+.tweet-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tweet-user-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.tweet-content {
+    font-size: 14px;
+    color: #14171a;
+}
+
+.tweet-content.bio {
+    color: #657786;
+}
+
+.tweet .fa-heart {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.tweet .fa-heart.far {
+    color: #657786;
+}
+
+.tweet .fa-heart.fas {
+    color: #e0245e;
+}
+
+.tweet span {
+    font-size: 12px;
+    color: #657786;
+    margin-left: 10px;
+}
+
+/* Error Message Styles */
+.alert.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    display: none;
+}
+
+.new-tweet-bottom {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
 
