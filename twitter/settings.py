@@ -14,7 +14,7 @@ SECRET_KEY = 'f$i1y0!gtey*j1nc)n$n^w_qu61&!b2(%xsgava7qik1kpz2y*'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -120,5 +120,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
 
