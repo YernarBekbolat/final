@@ -1,9 +1,0 @@
-*.log
-*.gz
-*.md
-*.yml
-__pycache__/
-*.pyc
-node_modules/
-tmp/
-tests/
