@@ -21,17 +21,14 @@ class SimpleCNNTextClassifier(nn.Module):
         logits = self.fc(x)
         return logits
 
-# Get the directory of the current file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load vocabulary
 vocab_path = os.path.join(BASE_DIR, 'model', 'vocab.json')
 with open(vocab_path, 'r') as f:
     vocab = json.load(f)
 
-vocab_size = len(vocab) + 1  # Plus one to account for padding/index 0
+vocab_size = len(vocab) + 1  
 
-# Load model with the correct vocabulary size
 model_path = os.path.join(BASE_DIR, 'model', 'cnn_text_classifier.pth')
 model = SimpleCNNTextClassifier(vocab_size=vocab_size, embed_size=128, num_classes=1, kernel_sizes=[3], num_filters=100)
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))  # Added map_location for CPU loading
